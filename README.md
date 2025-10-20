@@ -30,7 +30,7 @@ pip install colorama
 python todo.py add "Kitap oku"
 
 
- Çıktı:
+ 
 
 Added task: Kitap oku
 
@@ -39,11 +39,6 @@ Added task: Kitap oku
 
 python todo.py list
 
- Çıktı:
-
-1. Kitap oku
-2. Spor yap
-3. Ders çalış
 
 
 3️ Görev silme:
