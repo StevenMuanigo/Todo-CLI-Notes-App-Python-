@@ -1,0 +1,69 @@
+KOD:
+``python
+import json
+import argparse
+from colorama import init, Fore, Style
+import os
+
+init(autoreset=True)
+
+DATA_FILE = "tasks.json"
+
+def load_tasks():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, 'r', encoding='utf-8') as file:
+            return json.load(file)
+    return []
+
+def save_tasks(tasks):
+    with open(DATA_FILE, 'w', encoding='utf-8') as file:
+        json.dump(tasks, file, indent=4, ensure_ascii=False)
+
+def add_task(description):
+    tasks = load_tasks()
+    tasks.append({"description": description})
+    save_tasks(tasks)
+    print(Fore.GREEN + f"Added task: {description}")
+
+def list_tasks():
+    tasks = load_tasks()
+    if not tasks:
+        print(Fore.YELLOW + "No tasks available.")
+        return
+    for index, task in enumerate(tasks, 1):
+        print(Fore.BLUE + f"{index}. {task['description']}")
+
+def delete_task(index):
+    tasks = load_tasks()
+    if 0 < index <= len(tasks):
+        removed_task = tasks.pop(index - 1)
+        save_tasks(tasks)
+        print(Fore.RED + f"Deleted task: {removed_task['description']}")
+    else:
+        print(Fore.YELLOW + "Invalid task number.")
+
+def main():
+    parser = argparse.ArgumentParser(description="Todo CLI / Notes App")
+    subparsers = parser.add_subparsers(dest='command')
+
+    add_parser = subparsers.add_parser('add', help='Add a new task')
+    add_parser.add_argument('description', type=str, help='Description of the task')
+
+    list_parser = subparsers.add_parser('list', help='List all tasks')
+
+    delete_parser = subparsers.add_parser('delete', help='Delete a task by index')
+    delete_parser.add_argument('index', type=int, help='Index of the task to delete')
+
+    args = parser.parse_args()
+
+    if args.command == 'add':
+        add_task(args.description)
+    elif args.command == 'list':
+        list_tasks()
+    elif args.command == 'delete':
+        delete_task(args.index)
+    else:
+        parser.print_help()
+
+if __name__ == '__main__':
+    main()
